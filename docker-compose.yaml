@@ -1,0 +1,76 @@
+version: "3"
+
+services:
+  mongo:
+    container_name: mongo-container
+    image: mongo:5
+    restart: always
+    volumes:
+      - ./data/mongo:/data/db
+    ports:
+      - "27017:27017"
+    deploy:
+      resources:
+        limits:
+          cpus: "0.5"
+          memory: 128M
+
+  container-app1:
+    depends_on:
+      - mongo
+    container_name: container-app1
+    build:
+      dockerfile: ./dockerfile
+    working_dir: /usr/src/banking-api
+    command: bash -c "PORT=3000 bun run index.ts"
+    restart: always
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+    links:
+      - mongo
+    deploy:
+      resources:
+        limits:
+          cpus: "0.2"
+          memory: 128M
+
+  container-app2:
+    depends_on:
+      - mongo
+    container_name: container-app2
+    build:
+      dockerfile: ./dockerfile
+    working_dir: /usr/src/banking-api
+    command: bash -c "PORT=3001 bun run index.ts"
+    restart: always
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+    links:
+      - mongo
+    deploy:
+      resources:
+        limits:
+          cpus: "0.2"
+          memory: 128M
+
+  web:
+    container_name: nginx
+    depends_on:
+      - container-app1
+      - container-app2
+    image: nginx
+    volumes:
+      - ./nginx:/etc/nginx
+    ports:
+      - "9999:9999"
+    environment:
+      - NGINX_PORT=9999
+    deploy:
+      resources:
+        limits:
+          cpus: "0.1"
+          memory: 128M
