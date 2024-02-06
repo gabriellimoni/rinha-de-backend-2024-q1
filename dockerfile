@@ -18,8 +18,7 @@ ENV NODE_ENV=production
 
 FROM base AS release
 COPY --from=install /temp/prod/node_modules node_modules
-COPY --from=prerelease /usr/src/banking-api/index.ts .
-COPY --from=prerelease /usr/src/banking-api/package.json .
+COPY --from=prerelease /usr/src/banking-api/. .
 
 USER bun
 EXPOSE 3000/tcp
