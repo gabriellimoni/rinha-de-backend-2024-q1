@@ -33,7 +33,7 @@ export const postTransaction = async (
       ...input,
       valor: input.tipo === "c" ? input.valor : input.valor * -1,
       id: randomUUID(),
-      createdAt: new Date(),
+      realizada_em: new Date(),
     });
 
   return {
@@ -42,7 +42,7 @@ export const postTransaction = async (
   };
 };
 
-const getSaldo = async (userId: number) => {
+export const getSaldo = async (userId: number) => {
   const pipeline = db()
     .collection("transactions")
     .aggregate([
