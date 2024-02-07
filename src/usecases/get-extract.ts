@@ -42,7 +42,13 @@ export const getExtract = async (
         $limit: 10,
       },
       {
-        $unset: ["_id"],
+        $project: {
+          _id: 0,
+          valor: 1,
+          tipo: 1,
+          descricao: 1,
+          realizada_em: 1,
+        },
       },
     ])
     .toArray();

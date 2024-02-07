@@ -82,8 +82,13 @@ describe("post-transaction usecase", () => {
       total: 0,
     });
     expect(result.ultimas_transacoes).toHaveLength(4);
-    expect(result.ultimas_transacoes[0]).toMatchObject(transactions[3]);
-    expect(result.ultimas_transacoes[1]).toMatchObject(transactions[0]);
-    expect(result.ultimas_transacoes[2]).toMatchObject(transactions[1]);
+    const mappedTransactions: any = transactions.map((t) => ({
+      ...t,
+      id: undefined,
+      userId: undefined,
+    }));
+    expect(result.ultimas_transacoes[0]).toEqual(mappedTransactions[3]);
+    expect(result.ultimas_transacoes[1]).toEqual(mappedTransactions[0]);
+    expect(result.ultimas_transacoes[2]).toEqual(mappedTransactions[1]);
   });
 });
